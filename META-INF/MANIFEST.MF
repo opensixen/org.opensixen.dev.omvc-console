@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Eclipse-RegisterBuddy: org.eclipse.riena.communication.core
+Bundle-ManifestVersion: 2
+Bundle-Name: Omvc-console
+Bundle-SymbolicName: org.opensixen.dev.omvc-console;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.opensixen.omvc.console.Activator
+Require-Bundle: org.opensixen.dev.omvc-common;bundle-version="0.1.0",
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.osgi;bundle-version="3.5.2",
+ org.eclipse.riena.core;bundle-version="2.0.0",
+ org.eclipse.riena.communication.core;bundle-version="2.0.0",
+ org.eclipse.riena.communication.factory.hessian;bundle-version="2.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

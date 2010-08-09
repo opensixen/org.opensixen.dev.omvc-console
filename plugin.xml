@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="OMVCConsole"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.opensixen.omvc.console.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="org.opensixen.omvc.console.Perspective"
+            id="org.opensixen.dev.omvc-console.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Proyectos"
+            allowMultiple="true"
+            icon="icons/sample2.gif"
+            class="org.opensixen.omvc.console.view.ProjectView"
+            id="org.opensixen.dev.omvc-console.projectView">
+      </view>
+      <view
+            name="Mailboxes"
+            allowMultiple="true"
+            icon="icons/sample3.gif"
+            class="org.opensixen.omvc.console.NavigationView"
+            id="org.opensixen.dev.omvc-console.navigationView">
+      </view>
+      <view
+            class="org.opensixen.omvc.console.view.UserView"
+            icon="icons/sample2.gif"
+            id="org.opensixen.dev.omvc-console.userView"
+            name="Usuarios"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Mail"
+            id="org.opensixen.dev.omvc-console.category">
+      </category>
+      <command
+            name="Open Mailbox"
+            description="Opens a mailbox"
+            categoryId="org.opensixen.dev.omvc-console.category"
+            id="org.opensixen.dev.omvc-console.open">
+      </command>
+      <command
+            name="Open Message Dialog"
+            description="Open a message dialog"
+            categoryId="org.opensixen.dev.omvc-console.category"
+            id="org.opensixen.dev.omvc-console.openMessage">
+      </command>
+      <command
+            defaultHandler="org.opensixen.omvc.console.OpenRevisonCommitDialog"
+            description="Open new revision dialog"
+            id="org.opensixen.dev.omvc-console.OpenRevisonCommitDialog"
+            name="OpenRevisonCommitDialog">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.opensixen.dev.omvc-console.open"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+2">
+      </key>
+      <key
+            commandId="org.opensixen.dev.omvc-console.openMessage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X">
+      </key>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.opensixen.dev.omvc-console.application"
+            name="RCP Product">
+         <property
+               name="aboutText"
+               value="RCP Mail template created by PDE">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample2.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="Revisions"
+               label="Revisiones">
+            <command
+                  commandId="org.opensixen.dev.omvc-console.OpenRevisonCommitDialog"
+                  id="NewRevision"
+                  label="Nueva Revision"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+
+</plugin>

@@ -62,6 +62,11 @@
             id="org.opensixen.dev.omvc-console.openMessage">
       </command>
       <command
+            defaultHandler="org.opensixen.omvc.console.OpenConfigDialog"
+            description="Open the config Dialog"
+            id="org.opensixen.dev.omvc-console.OpenConfigDialog"       name="OpenConfigDialog">
+      </command>
+      <command
             defaultHandler="org.opensixen.omvc.console.OpenRevisonCommitDialog"
             description="Open new revision dialog"
             id="org.opensixen.dev.omvc-console.OpenRevisonCommitDialog"
@@ -93,11 +98,17 @@
             locationURI="menu:org.eclipse.ui.main.menu">
          <menu
                id="Revisions"
-               label="Revisiones">
+               label="Herramientas">
             <command
                   commandId="org.opensixen.dev.omvc-console.OpenRevisonCommitDialog"
                   id="NewRevision"
                   label="Nueva Revision"
+                  style="push">
+            </command>
+            <command
+                  commandId="org.opensixen.dev.omvc-console.OpenConfigDialog"
+                  id="Setup"
+                  label="Setup"
                   style="push">
             </command>
          </menu>

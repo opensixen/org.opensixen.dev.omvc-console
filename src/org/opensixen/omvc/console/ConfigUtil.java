@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.opensixen.dev.omvc.model.RienaTools;
+
 
 public class ConfigUtil {
 
@@ -119,17 +121,7 @@ public class ConfigUtil {
 		
 	public String getHostUrl(String webService)	{
 		String host = getHost();
-		if (host != null && host.endsWith("/"))	{
-			host = host.substring(0,host.lastIndexOf("/"));
-		}
-		StringBuffer buff = new StringBuffer(host);
-		buff.append("/hessian/");
-		
-		if (webService.startsWith("/"))	{
-			webService = webService.substring(1);
-		}
-		buff.append(webService);
-		return buff.toString();
+		return RienaTools.getURL(host, webService);
 	}
 	
 }

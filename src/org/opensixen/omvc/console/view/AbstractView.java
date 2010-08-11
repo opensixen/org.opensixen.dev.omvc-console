@@ -93,6 +93,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 			if (dialog.open() == SWT.OK)	{
 				reload();
 			}
+			reload();
 		}
 		// Editar
 		else if (e.getSource().equals(editBtn))	{
@@ -105,6 +106,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 			if (dialog.open() == SWT.OK)	{
 				reload();
 			}			
+			reload();
 		}
 		// Eliminar
 		else if (e.getSource().equals(deleteBtn))	{

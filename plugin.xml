@@ -87,26 +87,6 @@
       </key>
    </extension>
    <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.opensixen.dev.omvc-console.application"
-            name="RCP Product">
-         <property
-               name="aboutText"
-               value="RCP Mail template created by PDE">
-         </property>
-         <property
-               name="windowImages"
-               value="icons/sample2.gif">
-         </property>
-         <property
-               name="aboutImage"
-               value="product_lg.gif">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"

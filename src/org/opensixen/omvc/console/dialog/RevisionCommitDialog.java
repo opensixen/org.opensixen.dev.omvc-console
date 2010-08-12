@@ -202,7 +202,10 @@ public class RevisionCommitDialog extends TitleAreaDialog{
 		revision.setScripts(scripts);
 		
 		IRevisionUploader uploader = ServiceFactory.getUploader();
-		return uploader.uploadRevison(revision);		
+		if (uploader.uploadRevison(revision) == -1)	{
+			return false;
+		}
+		return true;		
 	}
 
 	@Override

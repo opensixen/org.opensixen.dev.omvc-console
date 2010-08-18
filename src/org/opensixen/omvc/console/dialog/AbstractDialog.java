@@ -10,6 +10,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 
 public abstract class AbstractDialog extends TitleAreaDialog{
 
@@ -75,6 +76,19 @@ public abstract class AbstractDialog extends TitleAreaDialog{
 		super.okPressed();
 	}
 
+	public static  Text createText(Composite parent) {
+		return createText(parent, SWT.BORDER);
+	}
+	
+	public static  Text createText(Composite parent, int style) {
+		Text editor = new Text(parent, style);		
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		editor.setLayoutData(gridData);
+		return editor;
+	}
+	
 	/**
 	 * Comprueba que los datos introducidos sean correctos.
 	 * @return

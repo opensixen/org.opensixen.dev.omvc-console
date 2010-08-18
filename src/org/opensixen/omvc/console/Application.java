@@ -13,6 +13,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.opensixen.dev.omvc.interfaces.IRemoteCentralizedIDGenerator;
 import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
+import org.opensixen.dev.omvc.interfaces.IRevisionDownloader;
 import org.opensixen.dev.omvc.interfaces.IRevisionUploader;
 import org.opensixen.omvc.console.dialog.ConfigDialog;
 import org.opensixen.omvc.riena.ServiceFactory;
@@ -100,6 +101,14 @@ public class Application implements IApplication {
 				.usingUrl(url).withProtocol("hessian")
 				.andStart(Activator.getContext()));
 
+		
+		// Registramos el downloader de revisiones
+		url = config.getHostUrl(IRevisionDownloader.path);
+		services.add(Register.remoteProxy(IRevisionDownloader.class)
+				.usingUrl(url).withProtocol("hessian")
+				.andStart(Activator.getContext()));
+
+		
 		registered = true;
 		return true;
 	}

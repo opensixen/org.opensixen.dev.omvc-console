@@ -1,6 +1,7 @@
 package org.opensixen.omvc.riena;
 
 import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
+import org.opensixen.dev.omvc.interfaces.IRevisionDownloader;
 import org.opensixen.dev.omvc.interfaces.IRevisionUploader;
 import org.opensixen.omvc.console.Activator;
 import org.osgi.framework.ServiceReference;
@@ -29,5 +30,16 @@ public class ServiceFactory {
 			throw new RuntimeException("No se puede registrar el uploader remoto");
 		}
 		return uploader;
+	}
+	
+	
+	public static IRevisionDownloader getDownloader()		{
+		ServiceReference ref = Activator.getContext().getServiceReference(IRevisionDownloader.class.getName());
+		IRevisionDownloader downloader = (IRevisionDownloader) Activator.getContext().getService(ref);
+		
+		if (downloader == null)	{
+			throw new RuntimeException("No se puede registrar el downloader remoto");
+		}
+		return downloader;
 	}
 }

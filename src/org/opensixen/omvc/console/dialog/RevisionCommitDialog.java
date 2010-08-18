@@ -9,6 +9,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -26,7 +28,7 @@ import org.opensixen.dev.omvc.model.Revision;
 import org.opensixen.dev.omvc.model.Script;
 import org.opensixen.omvc.riena.ServiceFactory;
 
-public class RevisionCommitDialog extends TitleAreaDialog{
+public class RevisionCommitDialog extends TitleAreaDialog implements SelectionListener {
 
 	private IRemoteConsole console;
 	
@@ -38,6 +40,8 @@ public class RevisionCommitDialog extends TitleAreaDialog{
 	private Text fDescription, fOraFile, fPgFile;
 	private Combo project;
 	private ArrayList<Project> projects;
+	private Button pgBttn;
+	private Button orBttn;
 	
 	@Override
 	public void create() {
@@ -131,19 +135,20 @@ public class RevisionCommitDialog extends TitleAreaDialog{
 		layout.numColumns = 2;
 		// layout.horizontalAlignment = GridData.FILL;
 		parent.setLayout(layout);
+		
 
 		// The text fields will grow with the size of the dialog
-		GridData gridData = new GridData();
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalAlignment = GridData.FILL;
+		//GridData gridData = new GridData();
+		//gridData.grabExcessHorizontalSpace = true;
+		//gridData.horizontalAlignment = GridData.FILL;
 
 		Label l = new Label(parent, SWT.NONE);
 		l.setText("Descripcion");
 
-		fDescription = new Text(parent, SWT.MULTI|SWT.BORDER);
-		fDescription.setLayoutData(gridData);
-		fDescription.setBounds(0,0,200,180);
-		fDescription.setSize(200, 180);
+		fDescription = new Text(parent, SWT.MULTI|SWT.BORDER|SWT.V_SCROLL);
+		fDescription.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		fDescription.setBounds(0,0,200,200);
+		fDescription.setSize(200, 200);
 
 		
 		l = new Label(parent, SWT.NONE);
@@ -159,21 +164,28 @@ public class RevisionCommitDialog extends TitleAreaDialog{
 		l = new Label(parent, SWT.NONE);
 		l.setText("Fichero PostgreSQL");
 		Composite pgComp = new Composite(parent, SWT.NONE);
-		FillLayout pgLayout = new FillLayout();
+		
+		GridLayout pgLayout = new GridLayout(2, false);
 		pgComp.setLayout(pgLayout);
+		pgComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		fPgFile = new Text(pgComp, SWT.BORDER);
-		Button pgBttn = new Button(pgComp, SWT.PUSH);
+		fPgFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		pgBttn = new Button(pgComp, SWT.PUSH);
 		pgBttn.setText("Buscar");
+		pgBttn.addSelectionListener(this);
 		
 		
 		l = new Label(parent, SWT.NONE);
 		l.setText("Fichero Oracle");
 		Composite orComp = new Composite(parent, SWT.NONE);
-		FillLayout orLayout = new FillLayout();
+		GridLayout orLayout = new GridLayout(2, false);
+		orComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		orComp.setLayout(orLayout);
 		fOraFile = new Text(orComp, SWT.BORDER);
-		Button orBttn = new Button(orComp, SWT.PUSH);
+		fOraFile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		orBttn = new Button(orComp, SWT.PUSH);
 		orBttn.setText("Buscar");
+		orBttn.addSelectionListener(this);
 		
 		return parent;
 	}
@@ -213,6 +225,38 @@ public class RevisionCommitDialog extends TitleAreaDialog{
 		if (commitRevision())	{
 			super.okPressed();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		if (e.getSource().equals(orBttn))	{
+			 FileDialog fd = new FileDialog(getParentShell(), SWT.OPEN);
+		     fd.setText("Open");
+		      String[] filterExt = { "*.sql", "*.SQL", ".txt", "*.TXT" };
+		      fd.setFilterExtensions(filterExt);
+		      fOraFile.setText(fd.open());
+		}
+		
+		if (e.getSource().equals(pgBttn))	{
+			 FileDialog fd = new FileDialog(getParentShell(), SWT.OPEN);
+		     fd.setText("Open");
+		      String[] filterExt = { "*.sql", "*.SQL", ".txt", "*.TXT" };
+		      fd.setFilterExtensions(filterExt);
+		      fPgFile.setText(fd.open());
+		}
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

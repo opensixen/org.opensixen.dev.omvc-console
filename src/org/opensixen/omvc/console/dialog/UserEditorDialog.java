@@ -46,6 +46,7 @@ public class UserEditorDialog extends AbstractDialog {
 		l.setText("Nombre");		
 		
 		fUser = new Text(parent, SWT.BORDER);
+		fUser.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		// Si tiene usuario, no se puede editar
 		if (developer.getUserName() != null)	{
 			fUser.setText(developer.getUserName());
@@ -55,10 +56,12 @@ public class UserEditorDialog extends AbstractDialog {
 		l = new Label(parent, SWT.NONE);
 		l.setText("Password");
 		fPassword1 = new Text(parent, SWT.BORDER);
+		fPassword1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		fPassword1.setEchoChar('*');
 		l = new Label(parent, SWT.NONE);
 		l.setText("Repita password");
 		fPassword2 = new Text(parent, SWT.BORDER);
+		fPassword2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		fPassword2.setEchoChar('*');
 		
 		return parent;

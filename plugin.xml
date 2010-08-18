@@ -42,6 +42,13 @@
             name="Usuarios"
             restorable="true">
       </view>
+      <view
+            class="org.opensixen.omvc.console.view.RevisionsView"
+            icon="icons/sample2.gif"
+            id="org.opensixen.omvc.console.view.revisionsView"
+            name="Revisiones"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

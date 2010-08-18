@@ -47,8 +47,7 @@ public class ProjectEditorDialog extends AbstractDialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		GridLayout layout = new GridLayout(2,false);
 		// layout.horizontalAlignment = GridData.FILL;
 		parent.setLayout(layout);
 
@@ -61,6 +60,7 @@ public class ProjectEditorDialog extends AbstractDialog {
 		nameLabel.setText("Nombre");		
 		
 		fName = new Text(parent, SWT.BORDER);
+		fName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		if (project.getName() != null)	{
 			fName.setText(project.getName());
 		}

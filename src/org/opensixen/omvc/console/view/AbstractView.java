@@ -32,6 +32,8 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 	private Button addBtn, editBtn, deleteBtn;
 	
 	protected Table table;
+
+	private Button reloadBtn;
 		
 	public AbstractView() {
 		super();
@@ -46,6 +48,9 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 		// Botones
 		Composite btnComposite = new Composite(top, SWT.NONE);
 		btnComposite.setLayout(new FillLayout());
+		reloadBtn = new Button(btnComposite, SWT.PUSH);
+		reloadBtn.setText("Recargar");
+		reloadBtn.addSelectionListener(this);
 		addBtn = new Button(btnComposite, SWT.PUSH);
 		addBtn.setText("Nuevo");
 		addBtn.addSelectionListener(this);
@@ -111,6 +116,10 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 		// Eliminar
 		else if (e.getSource().equals(deleteBtn))	{
 			
+		}
+		// Eliminar
+		else if (e.getSource().equals(reloadBtn))	{
+			reload();
 		}
 	
 	}

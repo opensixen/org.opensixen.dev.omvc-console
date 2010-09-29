@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Text;
 import org.opensixen.dev.omvc.model.Developer;
 import org.opensixen.omvc.console.Application;
 import org.opensixen.omvc.console.ConfigUtil;
+import org.opensixen.riena.client.proxy.RienaServerProxy;
 
 public class ConfigDialog extends AbstractDialog {
 
@@ -85,9 +86,7 @@ public class ConfigDialog extends AbstractDialog {
 		config.setUser(fUser.getText());
 		config.setPassword(fPassword.getText());
 		config.saveConf();
-		
-		Application.unregister();
-		Application.register();
+		RienaServerProxy.restartConnection();
 	}
 
 }

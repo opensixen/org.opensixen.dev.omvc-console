@@ -3,26 +3,13 @@ package org.opensixen.omvc.console.view;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.part.ViewPart;
-import org.opensixen.dev.omvc.interfaces.IPO;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Project;
 import org.opensixen.omvc.console.dialog.AbstractDialog;
 import org.opensixen.omvc.console.dialog.ProjectEditorDialog;
-import org.opensixen.omvc.riena.ServiceFactory;
 
 public class ProjectView extends AbstractView {
 	

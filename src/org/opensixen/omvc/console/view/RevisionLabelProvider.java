@@ -10,10 +10,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Project;
 import org.opensixen.dev.omvc.model.Revision;
-import org.opensixen.omvc.riena.ServiceFactory;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
+
 
 /**
  * @author harlock
@@ -29,7 +29,7 @@ public class RevisionLabelProvider implements ITableLabelProvider {
 	}
 
 	private void init()	{
-		IRemoteConsole console = ServiceFactory.getConsole();
+		RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
 		List<Project> projects = console.getProjects();
 		projectsIndex = new HashMap<Integer, String>();
 		for (Project project:projects)	{

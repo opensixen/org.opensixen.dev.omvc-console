@@ -18,10 +18,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.part.ViewPart;
 import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Revision;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 import org.opensixen.omvc.console.dialog.AbstractDialog;
 import org.opensixen.omvc.console.dialog.RevisionCommitDialog;
 import org.opensixen.omvc.console.dialog.RevisionEditDialog;
-import org.opensixen.omvc.riena.ServiceFactory;
 
 /**
  * @author harlock
@@ -42,7 +42,7 @@ public class RevisionsView extends ViewPart implements SelectionListener{
 
 	private Table table;
 
-	private IRemoteConsole console;
+	private RemoteConsoleProxy console;
 
 	private RevisionModelProvider modelProvider;
 
@@ -56,7 +56,7 @@ public class RevisionsView extends ViewPart implements SelectionListener{
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		console = ServiceFactory.getConsole();
+		console = RemoteConsoleProxy.getInstance();
 		createViewer(parent);
 		modelProvider = RevisionModelProvider.getInstance();
 		viewer.setInput(modelProvider.getRevisions());		

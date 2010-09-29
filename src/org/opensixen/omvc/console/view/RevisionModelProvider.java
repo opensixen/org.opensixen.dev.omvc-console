@@ -5,13 +5,12 @@ package org.opensixen.omvc.console.view;
 
 import java.util.List;
 
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
-import org.opensixen.dev.omvc.interfaces.IRevisionDownloader;
+
 import org.opensixen.dev.omvc.model.Revision;
-import org.opensixen.omvc.console.dialog.AbstractDialog;
-import org.opensixen.omvc.riena.ServiceFactory;
+
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
+import org.opensixen.omvc.client.proxy.RevisionDownloaderProxy;
+
 
 /**
  * @author harlock
@@ -21,8 +20,8 @@ public class RevisionModelProvider{
 	private static RevisionModelProvider content;
 	private List<Revision> revisions;
 
-	private IRevisionDownloader downloader = ServiceFactory.getDownloader();
-	private IRemoteConsole console = ServiceFactory.getConsole();
+	private RevisionDownloaderProxy downloader = RevisionDownloaderProxy.getInstance();
+	private RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
 	
 	public RevisionModelProvider() {
 		revisions = console.getRevisions();

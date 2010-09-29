@@ -21,20 +21,18 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
-import org.opensixen.dev.omvc.interfaces.IRevisionUploader;
 import org.opensixen.dev.omvc.model.Project;
 import org.opensixen.dev.omvc.model.Revision;
 import org.opensixen.dev.omvc.model.Script;
-import org.opensixen.omvc.riena.ServiceFactory;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 
 public class RevisionCommitDialog extends TitleAreaDialog implements SelectionListener {
 
-	private IRemoteConsole console;
+	private RemoteConsoleProxy console;
 	
 	public RevisionCommitDialog(Shell parentShell) {
 		super(parentShell);
-		this.console = ServiceFactory.getConsole();
+		this.console = RemoteConsoleProxy.getInstance();
 	}
 
 	private Text fDescription, fOraFile, fPgFile;
@@ -213,8 +211,8 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 		
 		revision.setScripts(scripts);
 		
-		IRevisionUploader uploader = ServiceFactory.getUploader();
-		if (uploader.uploadRevison(revision) == -1)	{
+		RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
+		if (console.uploadRevison(revision) == -1)	{
 			return false;
 		}
 		return true;		

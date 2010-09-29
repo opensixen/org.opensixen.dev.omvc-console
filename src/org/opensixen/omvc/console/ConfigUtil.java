@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.opensixen.dev.omvc.model.RienaTools;
+import org.opensixen.riena.client.proxy.ServiceConnection;
+import org.opensixen.riena.interfaces.IServiceConnectionHandler;
 
 
-public class ConfigUtil {
+public class ConfigUtil implements IServiceConnectionHandler {
 
 	private static final String fileName = "console.properties";
 	
@@ -122,6 +124,16 @@ public class ConfigUtil {
 	public String getHostUrl(String webService)	{
 		String host = getHost();
 		return RienaTools.getURL(host, webService);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.riena.interfaces.IServiceConnectionHandler#getServiceConnection()
+	 */
+	@Override
+	public ServiceConnection getServiceConnection() {
+		ServiceConnection connection = new ServiceConnection();
+		connection.setUrl(getHost());
+		return connection;
 	}
 	
 }

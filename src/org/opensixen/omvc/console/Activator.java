@@ -1,5 +1,6 @@
 package org.opensixen.omvc.console;
 
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.riena.communication.core.factory.Register;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -12,6 +13,11 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	private static BundleContext context;
+	
+	
+	/* stuff for the login configuration */
+	private static final String CONFIG_PREF = "loginConfiguration"; //$NON-NLS-1$
+	private static final String CONFIG_DEFAULT = "omvc"; //$NON-NLS-1$
 	
 	public static BundleContext getContext()	{
 		return context;
@@ -66,5 +72,9 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	public static String getConfigurationName() {
+		return new DefaultScope().getNode(PLUGIN_ID).get(CONFIG_PREF, CONFIG_DEFAULT);
 	}
 }

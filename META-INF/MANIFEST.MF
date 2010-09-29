@@ -10,6 +10,10 @@ Require-Bundle: org.opensixen.dev.omvc-common;bundle-version="0.1.0",
  org.eclipse.core.runtime,
  org.eclipse.osgi;bundle-version="3.5.2",
  org.eclipse.riena.core;bundle-version="2.0.0",
- org.eclipse.riena.communication.core;bundle-version="2.0.0"
+ org.eclipse.riena.communication.core;bundle-version="2.0.0",
+ org.eclipse.equinox.security;bundle-version="1.0.200",
+ org.eclipse.riena.security.common;bundle-version="2.0.0",
+ org.opensixen.riena;bundle-version="1.0.0",
+ org.opensixen.omvc.client;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

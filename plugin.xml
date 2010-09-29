@@ -121,5 +121,26 @@
          </menu>
       </menuContribution>
    </extension>
+   <extension
+         id="OMVCCallbackHandler"
+         point="org.eclipse.equinox.security.callbackHandler">
+      <callbackHandler
+            class="org.opensixen.omvc.console.jaas.OMVCCallbackHandler">
+      </callbackHandler>
+   </extension>
+   <extension
+         id="OMVCLoginModule"
+         point="org.eclipse.equinox.security.loginModule">
+      <loginModule
+            class="org.opensixen.omvc.console.jaas.OMVCLoginModule">
+      </loginModule>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.security.callbackHandlerMapping">
+      <callbackHandlerMapping
+            callbackHandlerId="org.opensixen.dev.omvc-console.OMVCCallbackHandler"
+            configName="omvc">
+      </callbackHandlerMapping>
+   </extension>
 
 </plugin>

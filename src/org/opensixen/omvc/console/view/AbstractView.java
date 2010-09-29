@@ -18,15 +18,14 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.ViewPart;
 import org.opensixen.dev.omvc.interfaces.IPO;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Project;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 import org.opensixen.omvc.console.dialog.AbstractDialog;
 import org.opensixen.omvc.console.dialog.ProjectEditorDialog;
-import org.opensixen.omvc.riena.ServiceFactory;
 
 public abstract class AbstractView extends ViewPart implements SelectionListener{
 
-	protected IRemoteConsole console;
+	protected RemoteConsoleProxy console;
 		
 	private Composite parent;
 	private Button addBtn, editBtn, deleteBtn;
@@ -37,7 +36,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 		
 	public AbstractView() {
 		super();
-		this.console = ServiceFactory.getConsole();
+		this.console = RemoteConsoleProxy.getInstance();
 	}
 	
 	public void createPartControl(Composite parent) {

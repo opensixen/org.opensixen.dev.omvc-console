@@ -9,9 +9,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Developer;
-import org.opensixen.omvc.riena.ServiceFactory;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
+
 
 public class UserEditorDialog extends AbstractDialog {
 
@@ -88,7 +88,7 @@ public class UserEditorDialog extends AbstractDialog {
 	protected void saveInput() {
 		developer.setUserName(fUser.getText());
 		developer.setPassword(fPassword1.getText());
-		IRemoteConsole console = ServiceFactory.getConsole();
+		RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
 		console.save(developer);
 	}
 

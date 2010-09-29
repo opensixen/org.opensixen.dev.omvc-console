@@ -16,7 +16,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Project;
-import org.opensixen.omvc.riena.ServiceFactory;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 
 
 public class ProjectEditorDialog extends AbstractDialog {
@@ -80,7 +80,7 @@ public class ProjectEditorDialog extends AbstractDialog {
 	
 	protected void saveInput() {
 		project.setName(fName.getText());
-		IRemoteConsole console = ServiceFactory.getConsole();
+		RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
 		console.save(project);
 	}
 	

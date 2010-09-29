@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Revision;
 import org.opensixen.dev.omvc.model.Script;
-import org.opensixen.omvc.riena.ServiceFactory;
+import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 
 /**
  * @author harlock
@@ -32,7 +32,7 @@ public class RevisionEditDialog extends TitleAreaDialog  {
 
 	private Revision revision;
 	private Text fDescription;
-	private IRemoteConsole console;
+	private RemoteConsoleProxy console;
 	private ArrayList<ScriptWrapper> scriptEditors;
 
 	/**
@@ -41,7 +41,7 @@ public class RevisionEditDialog extends TitleAreaDialog  {
 	public RevisionEditDialog(Shell parentShell, Revision revision) {
 		super(parentShell);
 		this.revision = revision;
-		this.console = ServiceFactory.getConsole();
+		this.console = RemoteConsoleProxy.getInstance();
 		revision.setScripts(console.getScripts(revision));
 	}
 
@@ -161,10 +161,5 @@ class ScriptWrapper	{
 	 */
 	public void setScript(Script script) {
 		this.script = script;
-	}	
-	
-	
-	
-	
-	
+	}		
 }

@@ -18,18 +18,30 @@ public class ConfigUtil implements IServiceConnectionHandler {
 	
 	private static final String KEY_HOST = "host";
 	private static final String KEY_USER = "user";
-
+	private static final String KEY_PORT = "port";
+	
 	private static final String KEY_PASSWORD = "password";
 	
 	private String host;
+	
+	private String port;
 	
 	private String user;
 	
 	private String password;
 
+	private static ConfigUtil instance;
+	
+	public static ConfigUtil getConfig()	{
+		if (instance == null)	{
+			instance = new ConfigUtil();
+		}
+		
+		return instance;
+	}
 	
 	
-	public ConfigUtil() {
+	private ConfigUtil() {
 		super();
 		// TODO Auto-generated constructor stub
 	}	
@@ -76,7 +88,20 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		this.password = password;
 	}
 	
-	
+	/**
+	 * @return the port
+	 */
+	public String getPort() {
+		return port;
+	}
+
+	/**
+	 * @param port the port to set
+	 */
+	public void setPort(String port) {
+		this.port = port;
+	}
+
 	public boolean loadConf()	{
 		String confPath = Activator.getDefault().getStateLocation().toOSString();
 		File f = new File(confPath + "/" + fileName);
@@ -95,6 +120,7 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		setHost(prop.getProperty(KEY_HOST));
 		setUser(prop.getProperty(KEY_USER));
 		setPassword(prop.getProperty(KEY_PASSWORD));
+		setPort(prop.getProperty(KEY_PORT));
 				
 		return true;
 	}
@@ -103,6 +129,7 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		Properties prop = new Properties();
 		
 		prop.setProperty(KEY_HOST, getHost());
+		prop.setProperty(KEY_PORT, getPort());
 		prop.setProperty(KEY_USER, getUser());
 		prop.setProperty(KEY_PASSWORD, getPassword());
 		String fname = Activator.getDefault().getStateLocation().toOSString() + "/" + fileName;
@@ -121,9 +148,8 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		return true;
 	}
 		
-	public String getHostUrl(String webService)	{
-		String host = getHost();
-		return RienaTools.getURL(host, webService);
+	public String getHostUrl(String webService)	{	
+		return RienaTools.getURL(getHost(), getPort(), webService);
 	}
 
 	/* (non-Javadoc)
@@ -132,7 +158,8 @@ public class ConfigUtil implements IServiceConnectionHandler {
 	@Override
 	public ServiceConnection getServiceConnection() {
 		ServiceConnection connection = new ServiceConnection();
-		connection.setUrl(getHost());
+		connection.setHost(getHost());
+		connection.setPort(getPort());
 		return connection;
 	}
 	

@@ -8,6 +8,8 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import org.opensixen.omvc.console.ConfigUtil;
+
 
 public class OMVCCallbackHandler implements CallbackHandler {
 
@@ -16,8 +18,12 @@ public class OMVCCallbackHandler implements CallbackHandler {
 	 */
 	@Override
 	public void handle(Callback[] callbacks) throws IOException,	UnsupportedCallbackException {
-		((NameCallback) callbacks[0]).setName("indeos");
-		((PasswordCallback) callbacks[1]).setPassword("passwd".toCharArray());
+		
+		// Leemos la configuracion
+		ConfigUtil config = ConfigUtil.getConfig();
+		
+		((NameCallback) callbacks[0]).setName(config.getUser());
+		((PasswordCallback) callbacks[1]).setPassword(config.getPassword().toCharArray());
 	}
 
 

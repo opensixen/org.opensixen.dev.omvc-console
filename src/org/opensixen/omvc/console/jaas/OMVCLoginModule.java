@@ -95,15 +95,7 @@ public class OMVCLoginModule implements LoginModule {
 		callbacks[1] = new PasswordCallback("passwd", false);
 
 		try {
-			callbackHandler.handle(callbacks);
-			/*
-			username = ((NameCallback) callbacks[0]).getName();
-			char[] tmpPassword = ((PasswordCallback) callbacks[1])
-					.getPassword();
-			password = new char[tmpPassword.length];
-			System.arraycopy(tmpPassword, 0, password, 0, tmpPassword.length);
-			((PasswordCallback) callbacks[1]).clearPassword();
-			*/
+			callbackHandler.handle(callbacks);			
 			return callbacks;
 
 		} catch (java.io.IOException ioe) {

@@ -17,7 +17,7 @@ import org.opensixen.riena.client.proxy.RienaServerProxy;
 public class ConfigDialog extends AbstractDialog {
 
 	private ConfigUtil config;
-	private Text fHost, fUser, fPassword;
+	private Text fHost, fUser, fPassword, fPort;
 	
 	public ConfigDialog(Shell parentShell, ConfigUtil config) {
 		super(parentShell);
@@ -49,7 +49,15 @@ public class ConfigDialog extends AbstractDialog {
 		if (config.getHost() != null)	{
 			fHost.setText(config.getHost());
 		}
-		
+		l = new Label (parent, SWT.NONE);
+		l.setText("Puerto");
+		fPort = new Text(parent, SWT.BORDER);
+		if (config.getPort() != null)	{
+			fPort.setText(config.getPort());
+		}
+		else {
+			fPort.setText("8080");
+		}
 		
 		l = new Label(parent, SWT.NONE);
 		l.setText("Usuario");
@@ -66,6 +74,8 @@ public class ConfigDialog extends AbstractDialog {
 			fPassword.setText(config.getPassword());
 		}
 		
+		
+		
 		return parent;
 	}
 
@@ -73,7 +83,7 @@ public class ConfigDialog extends AbstractDialog {
 	@Override
 	protected boolean isValidInput() {
 		
-		if (fHost.getText() != null && fUser.getText() != null && fPassword.getText() != null)	{
+		if (fHost.getText() != null && fPort.getText() != null && fUser.getText() != null && fPassword.getText() != null)	{
 			return true;	
 		}
 		return false;
@@ -83,6 +93,7 @@ public class ConfigDialog extends AbstractDialog {
 	@Override
 	protected void saveInput() {
 		config.setHost(fHost.getText());
+		config.setPort(fPort.getText());
 		config.setUser(fUser.getText());
 		config.setPassword(fPassword.getText());
 		config.saveConf();

@@ -86,7 +86,7 @@ public class Application implements IApplication {
 	
 	private boolean initApp() {
 		// Leemos la configuracion
-		ConfigUtil config = new ConfigUtil();
+		ConfigUtil config = ConfigUtil.getConfig();
 
 		if (config.loadConf() == false) {
 			ConfigDialog configDialog = new ConfigDialog(shell, config);

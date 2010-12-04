@@ -20,7 +20,7 @@ public class OMVCCallbackHandler implements CallbackHandler {
 	public void handle(Callback[] callbacks) throws IOException,	UnsupportedCallbackException {
 		
 		// Leemos la configuracion
-		ConfigUtil config = ConfigUtil.getConfig();
+		ConfigUtil config = ConfigUtil.getInstance();
 		
 		((NameCallback) callbacks[0]).setName(config.getUser());
 		((PasswordCallback) callbacks[1]).setPassword(config.getPassword().toCharArray());

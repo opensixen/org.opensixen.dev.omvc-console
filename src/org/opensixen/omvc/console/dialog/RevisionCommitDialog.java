@@ -4,13 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -26,7 +24,7 @@ import org.opensixen.dev.omvc.model.Revision;
 import org.opensixen.dev.omvc.model.Script;
 import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 
-public class RevisionCommitDialog extends TitleAreaDialog implements SelectionListener {
+public class RevisionCommitDialog extends AbstractDialog implements SelectionListener {
 
 	private RemoteConsoleProxy console;
 	
@@ -36,10 +34,12 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 	}
 
 	private Text fDescription, fOraFile, fPgFile;
-	private Combo project;
+	private Combo project, cType;
 	private ArrayList<Project> projects;
 	private Button pgBttn;
 	private Button orBttn;
+	
+	private Button isMultiFile;
 	
 	@Override
 	public void create() {
@@ -101,7 +101,8 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 		return button;
 	}
 
-	private boolean isValidInput() {		
+	@Override
+	protected boolean isValidInput() {		
 		if (fDescription.getText() == null || fDescription.getText().length() <=0 )	{
 			return false;
 		}
@@ -157,7 +158,17 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 		for (Project p:projects)	
 			project.add(p.getName());
 		project.setSize (200, 200);
-
+		
+		l = new Label(parent, SWT.NONE);
+		l.setText("Tipo de Script");
+		cType = new Combo(parent, SWT.SIMPLE);
+		cType.add(Script.TYPE_SQL);
+		cType.add(Script.TYPE_OSX);
+		
+		l = new Label(parent, SWT.NONE);
+		l.setText("Multiples Ficheros");
+		isMultiFile = new Button(parent, SWT.CHECK);
+		
 		// Ficheros de cambios
 		l = new Label(parent, SWT.NONE);
 		l.setText("Fichero PostgreSQL");
@@ -193,22 +204,15 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 		Revision revision = new Revision();
 		revision.setDescription(fDescription.getText());
 		revision.setProject(projects.get(project.getSelectionIndex()));
-		
+				
 		ArrayList<Script> scripts = new ArrayList<Script>();
-		Script pgScript = new Script();
-		pgScript.setEngine(Script.ENGINE_POSTGRESQL);
-		if (pgScript.loadFile(fPgFile.getText()) == false)	{
-			return false;
+		if (isMultiFile.getSelection())	{
+			scripts.addAll(loadMultiFileScripts());
 		}
-		scripts.add(pgScript);
-		
-		Script orScript = new Script();
-		orScript.setEngine(Script.ENGINE_ORACLE);
-		if (orScript.loadFile(fOraFile.getText()) == false)	{
-			return false;
-		}
-		scripts.add(orScript);
-		
+		else {
+			scripts.addAll(loadScripts());
+		}		
+				
 		revision.setScripts(scripts);
 		
 		RemoteConsoleProxy console = RemoteConsoleProxy.getInstance();
@@ -218,31 +222,72 @@ public class RevisionCommitDialog extends TitleAreaDialog implements SelectionLi
 		return true;		
 	}
 
-	@Override
-	protected void okPressed() {
-		if (commitRevision())	{
-			super.okPressed();
-		}
+		
+	private ArrayList<Script> loadScripts()	{
+		ArrayList<Script> scripts = new ArrayList<Script>();
+		
+		// Postgres
+		Script pgScript = Script.getScript(Script.ENGINE_POSTGRESQL, cType.getText(), fPgFile.getText());				
+		scripts.add(pgScript);
+		
+		// Oracle
+		Script orScript = Script.getScript(Script.ENGINE_ORACLE, cType.getText(), fOraFile.getText());		
+		scripts.add(orScript);
+		return scripts;
 	}
+	
+	private ArrayList<Script> loadMultiFileScripts()	{
+		ArrayList<Script> scripts = new ArrayList<Script>();
+		// Postgres
+		File pgDir = new File(fPgFile.getText());
+		for (String fileName: pgDir.list())	{
+			Script script = Script.getScript(Script.ENGINE_POSTGRESQL, cType.getText(), pgDir + "/" + fileName);
+			scripts.add(script);
+		}
+		
+		// Oracle
+		File oraDir = new File(fOraFile.getText());
+		for (String fileName: oraDir.list())	{
+			Script script = Script.getScript(Script.ENGINE_ORACLE, cType.getText(), oraDir + "/" + fileName);
+			scripts.add(script);
+		}
+		
+		return scripts;
+	}
+		
+		
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.omvc.console.dialog.AbstractDialog#saveInput()
+	 */
+	@Override
+	protected void saveInput() {
+		commitRevision();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 	 */
 	@Override
 	public void widgetSelected(SelectionEvent e) {
+		String[] filterExt = { "*.sql;*.SQL;.txt;*.TXT" };
+		
+		
 		if (e.getSource().equals(orBttn))	{
 			 FileDialog fd = new FileDialog(getParentShell(), SWT.OPEN);
 		     fd.setText("Open");
-		      String[] filterExt = { "*.sql", "*.SQL", ".txt", "*.TXT" };
-		      fd.setFilterExtensions(filterExt);
+		      
 		      fOraFile.setText(fd.open());
 		}
 		
 		if (e.getSource().equals(pgBttn))	{
 			 FileDialog fd = new FileDialog(getParentShell(), SWT.OPEN);
 		     fd.setText("Open");
-		      String[] filterExt = { "*.sql", "*.SQL", ".txt", "*.TXT" };
-		      fd.setFilterExtensions(filterExt);
+		      //String[] filterExt = { "*.sql", "*.SQL", ".txt", "*.TXT" };
+		     if (!isMultiFile.getSelection())	{	    	  
+		    	  fd.setFilterExtensions(filterExt);		    	  
+		      }
 		      fPgFile.setText(fd.open());
 		}
 		

@@ -1,7 +1,5 @@
 package org.opensixen.omvc.console.view;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -11,17 +9,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.ViewPart;
-import org.opensixen.dev.omvc.interfaces.IPO;
-import org.opensixen.dev.omvc.model.Project;
 import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
 import org.opensixen.omvc.console.dialog.AbstractDialog;
-import org.opensixen.omvc.console.dialog.ProjectEditorDialog;
 
 public abstract class AbstractView extends ViewPart implements SelectionListener{
 
@@ -39,6 +32,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 		this.console = RemoteConsoleProxy.getInstance();
 	}
 	
+	@Override
 	public void createPartControl(Composite parent) {
 		this.parent = parent;
 		Composite top = new Composite(parent, SWT.NONE);
@@ -86,6 +80,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 	}
 
 	
+	@Override
 	public void setFocus() {
 	}
 
@@ -128,7 +123,7 @@ public abstract class AbstractView extends ViewPart implements SelectionListener
 	 * Limpia la tabla y llama a fillTable
 	 */
 	protected void reload()	{
-		table.clearAll();
+		table.removeAll();
 		fillTable(table);
 	}
 	

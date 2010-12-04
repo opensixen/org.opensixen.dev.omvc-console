@@ -9,15 +9,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.opensixen.dev.omvc.model.Developer;
-import org.opensixen.omvc.console.Application;
 import org.opensixen.omvc.console.ConfigUtil;
 import org.opensixen.riena.client.proxy.RienaServerProxy;
 
 public class ConfigDialog extends AbstractDialog {
 
 	private ConfigUtil config;
-	private Text fHost, fUser, fPassword, fPort;
+	private Text fHost, fUser, fPassword, fPort, fService;
 	
 	public ConfigDialog(Shell parentShell, ConfigUtil config) {
 		super(parentShell);
@@ -60,6 +58,13 @@ public class ConfigDialog extends AbstractDialog {
 		}
 		
 		l = new Label(parent, SWT.NONE);
+		l.setText("Servicio");
+		fService = new Text(parent, SWT.BORDER);
+		if (config.getService() != null)	{
+			fService.setText(config.getService());
+		}
+		
+		l = new Label(parent, SWT.NONE);
 		l.setText("Usuario");
 		fUser = new Text(parent, SWT.BORDER);
 		if (config.getUser() != null)	{
@@ -94,6 +99,7 @@ public class ConfigDialog extends AbstractDialog {
 	protected void saveInput() {
 		config.setHost(fHost.getText());
 		config.setPort(fPort.getText());
+		config.setService(fService.getText());
 		config.setUser(fUser.getText());
 		config.setPassword(fPassword.getText());
 		config.saveConf();

@@ -43,9 +43,9 @@
             restorable="true">
       </view>
       <view
-            class="org.opensixen.omvc.console.view.RevisionsView"
+            class="org.opensixen.omvc.console.view.RevisionView"
             icon="icons/sample2.gif"
-            id="org.opensixen.omvc.console.view.revisionsView"
+            id="org.opensixen.omvc.console.view.revisionView"
             name="Revisiones"
             restorable="true">
       </view>

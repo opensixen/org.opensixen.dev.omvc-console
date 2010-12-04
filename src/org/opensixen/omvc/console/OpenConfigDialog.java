@@ -10,7 +10,7 @@ public class OpenConfigDialog extends AbstractHandler{
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ConfigUtil config = ConfigUtil.getConfig();
+		ConfigUtil config = ConfigUtil.getInstance();
 		config.loadConf();
 		ConfigDialog dialog = new ConfigDialog(HandlerUtil.getActiveWorkbenchWindow(
 				event).getShell(), config );

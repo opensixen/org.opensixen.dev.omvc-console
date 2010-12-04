@@ -3,23 +3,21 @@
  */
 package org.opensixen.omvc.console.dialog;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.opensixen.dev.omvc.interfaces.IRemoteConsole;
 import org.opensixen.dev.omvc.model.Revision;
 import org.opensixen.dev.omvc.model.Script;
 import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
@@ -28,12 +26,17 @@ import org.opensixen.omvc.client.proxy.RemoteConsoleProxy;
  * @author harlock
  *
  */
-public class RevisionEditDialog extends TitleAreaDialog  {
+public class RevisionEditDialog extends AbstractDialog implements SelectionListener  {
 
 	private Revision revision;
-	private Text fDescription;
 	private RemoteConsoleProxy console;
-	private ArrayList<ScriptWrapper> scriptEditors;
+	private Table table;
+	private String[] titles = {"ID", "Nombre", "Engine", "Tipo", "SQL"};
+	private Text fName;
+	private Combo cEngine;
+	private Combo cType;
+	private Text editor;
+	private Script selected;
 
 	/**
 	 * @param parentShell
@@ -56,110 +59,145 @@ public class RevisionEditDialog extends TitleAreaDialog  {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		
-		Composite main = new Composite(parent, SWT.NONE);	
-		main.setLayout(new GridLayout(1, false));
-		GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
-		main.setLayoutData(gridData);		
+		parent.setLayout(new GridLayout());
+	
+		table = new Table (parent, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
+		GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		tableData.heightHint = 100;
+		table.setLayoutData(tableData);
+		table.setLinesVisible (true);
+		table.setHeaderVisible (true);
+		table.addSelectionListener(this);
 		
-		Composite editorComposite = new Composite(main, SWT.NONE);
 		
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.makeColumnsEqualWidth = false;
-		editorComposite.setLayout(layout);
-		editorComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		
-		Label l = new Label(editorComposite, SWT.NONE);
-		l.setText("Descripcion");		
-		
-		fDescription = AbstractDialog.createText(editorComposite);
-		fDescription.setText(revision.getDescription());
-				
-		Composite scriptComposite = new Composite(main, SWT.NONE);
-		scriptComposite.setLayout(new GridLayout());
-		scriptComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-//		FillLayout fillLayout = new FillLayout();
-//		fillLayout.type = SWT.VERTICAL;
-//		scriptComposite.setLayout(fillLayout);
-
-		
-		scriptEditors = new ArrayList<ScriptWrapper>();
-		CTabFolder folder = new CTabFolder(scriptComposite, SWT.BORDER);
-		folder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		// Creamos controles para los scripts
-		for (Script script:revision.getScripts())	{
-			CTabItem tabItem = new CTabItem(folder, SWT.NONE);
-			tabItem.setText(script.getEngine() + " " + script.getType());
-
-			Composite tab = new Composite(folder, SWT.NONE);
-			tab.setLayout(new GridLayout());
-			tab.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, true));
-			tabItem.setControl(tab);
-			Text editor = new Text(tab, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-			editor.setText(script.getScript());
-			editor.setSize(150, 40);
-			editor.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, true));
-			scriptEditors.add(new ScriptWrapper(editor, script));
+		// Obtenemos los titulos de la ventana
+		for (int i=0; i<titles.length; i++) {
+			TableColumn column = new TableColumn (table, SWT.NONE);
+			column.setText (titles [i]);
 		}
+		updateScriptsTable();
+
+		for (int i=0; i<titles.length; i++) {
+			table.getColumn (i).pack();
+		}	
+		
+		// Composite with Revision data
+		Composite infoComposite = new Composite(parent, SWT.NONE);
+		infoComposite.setLayout(new GridLayout(2, false));
+		GridData infoData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		infoComposite.setLayoutData(infoData);
+		
+		Label label = new Label(infoComposite, SWT.NONE);
+		label.setText("Nombre");
+		label.setLayoutData(new GridData(SWT.FILL));
+		fName = createText(infoComposite);
+		label = new Label(infoComposite, SWT.NONE);
+		label.setText("Engine");
+		cEngine = new Combo (infoComposite, SWT.SIMPLE);
+		cEngine.add(Script.ENGINE_POSTGRESQL);
+		cEngine.add(Script.ENGINE_ORACLE);
+		
+		label = new Label(infoComposite, SWT.NONE);
+		label.setText("Tipo de Script");
+		cType = new Combo(infoComposite, SWT.SIMPLE);
+		cType.add(Script.TYPE_SQL);
+		cType.add(Script.TYPE_OSX);
+		
+		// Text Editor
+		editor = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		GridData editorData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		editorData.heightHint = 100;
+		editor.setLayoutData(editorData);
 		
 		return parent;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.dialogs.Dialog#okPressed()
-	 */
-	@Override
-	protected void okPressed() {
-		ArrayList<Script> scripts = new ArrayList<Script>();
-		for (ScriptWrapper wrapper: scriptEditors)	{
-			Script script = wrapper.getScript();
-			Text editor = wrapper.getEditor();
-			script.setScript(editor.getText());
-			scripts.add(script);
+	private void updateScriptsTable()	{
+		int previewSize = 60;
+		table.removeAll();
+		for (Script script: revision.getScripts())	{
+			int i=0;
+			TableItem item = new TableItem (table, SWT.NONE);
+			item.setText(i++, script.getScript_ID()+"");
+			item.setText(i++, script.getEngine());
+			item.setText(i++, script.getType());
+			item.setText(i++, script.getName()+"");
+			String s = script.getScript();
+			s = s.replaceAll("\n", " ");
+			if (s == null)	{
+				s = "";
+			}
+			else if (s.length() > previewSize +1)	{
+				s = s.substring(0, previewSize) + "...";
+			}
+			item.setText(i++, s);
+		}				
+	}
+	
+	private void loadScriptData()	{
+		if (selected.getName() != null)	{
+			fName.setText(selected.getName());
+		}
+		else {
+			fName.setText("");
 		}
 		
-		revision.setScripts(scripts);
-		if (console.uploadRevison(revision) != -1)		{
-			setReturnCode(OK);
-			close();
+		if (selected.getScript() != null)	{
+			editor.setText(selected.getScript());
+		}
+		else {
+			editor.setText("");
+		}
+		
+		cEngine.setText(selected.getEngine());
+		cType.setText(selected.getType());				
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.opensixen.omvc.console.dialog.AbstractDialog#isValidInput()
+	 */
+	@Override
+	protected boolean isValidInput() {
+		if (selected == null)	{
+			return false;
+		}
+		
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.omvc.console.dialog.AbstractDialog#saveInput()
+	 */
+	@Override
+	protected void saveInput() {
+		selected.setEngine(cEngine.getText());
+		selected.setType(cType.getText());
+		selected.setName(fName.getText());
+		selected.setScript(editor.getText());
+		console.save(selected);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetSelected(SelectionEvent e) {
+		if (e.getSource().equals(table))	{
+			int index = table.getSelectionIndex();
+			selected = revision.getScripts().get(index);
+			loadScriptData();
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+	 */
+	@Override
+	public void widgetDefaultSelected(SelectionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
 
-}
 
-
-class ScriptWrapper	{
-	private Text editor;
-	private Script script;
-	public ScriptWrapper(Text editor, Script script) {
-		super();
-		this.editor = editor;
-		this.script = script;
-	}
-	/**
-	 * @return the editor
-	 */
-	public Text getEditor() {
-		return editor;
-	}
-	/**
-	 * @param editor the editor to set
-	 */
-	public void setEditor(Text editor) {
-		this.editor = editor;
-	}
-	/**
-	 * @return the script
-	 */
-	public Script getScript() {
-		return script;
-	}
-	/**
-	 * @param script the script to set
-	 */
-	public void setScript(Script script) {
-		this.script = script;
-	}		
 }

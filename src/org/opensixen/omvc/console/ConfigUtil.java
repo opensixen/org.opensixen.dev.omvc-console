@@ -5,10 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.opensixen.dev.omvc.model.RienaTools;
 import org.opensixen.riena.client.proxy.ServiceConnection;
+import org.opensixen.riena.interfaces.IConnectionChangeListener;
 import org.opensixen.riena.interfaces.IServiceConnectionHandler;
 
 
@@ -19,8 +21,11 @@ public class ConfigUtil implements IServiceConnectionHandler {
 	private static final String KEY_HOST = "host";
 	private static final String KEY_USER = "user";
 	private static final String KEY_PORT = "port";
+	private static final String KEY_SERVICE = "service";
 	
 	private static final String KEY_PASSWORD = "password";
+	
+	private ArrayList<IConnectionChangeListener> connectionChangeListeners = new ArrayList<IConnectionChangeListener>();
 	
 	private String host;
 	
@@ -28,11 +33,13 @@ public class ConfigUtil implements IServiceConnectionHandler {
 	
 	private String user;
 	
+	private String service;
+	
 	private String password;
 
 	private static ConfigUtil instance;
 	
-	public static ConfigUtil getConfig()	{
+	public static ConfigUtil getInstance()	{
 		if (instance == null)	{
 			instance = new ConfigUtil();
 		}
@@ -101,6 +108,22 @@ public class ConfigUtil implements IServiceConnectionHandler {
 	public void setPort(String port) {
 		this.port = port;
 	}
+	
+	/**
+	 * @return the service
+	 */
+	public String getService() {
+		return service;
+	}
+
+
+	/**
+	 * @param service the service to set
+	 */
+	public void setService(String service) {
+		this.service = service;
+	}
+
 
 	public boolean loadConf()	{
 		String confPath = Activator.getDefault().getStateLocation().toOSString();
@@ -121,6 +144,7 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		setUser(prop.getProperty(KEY_USER));
 		setPassword(prop.getProperty(KEY_PASSWORD));
 		setPort(prop.getProperty(KEY_PORT));
+		setService(prop.getProperty(KEY_SERVICE));
 				
 		return true;
 	}
@@ -132,6 +156,7 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		prop.setProperty(KEY_PORT, getPort());
 		prop.setProperty(KEY_USER, getUser());
 		prop.setProperty(KEY_PASSWORD, getPassword());
+		prop.setProperty(KEY_SERVICE, getService());
 		String fname = Activator.getDefault().getStateLocation().toOSString() + "/" + fileName;
 		try {
 			FileOutputStream stream = new FileOutputStream(fname, false);
@@ -145,11 +170,12 @@ public class ConfigUtil implements IServiceConnectionHandler {
 			e.printStackTrace();
 			return false;
 		}
+		fireConnectionChange();
 		return true;
 	}
 		
 	public String getHostUrl(String webService)	{	
-		return RienaTools.getURL(getHost(), getPort(), webService);
+		return RienaTools.getURL(getHost(), getPort(), getService(), webService);
 	}
 
 	/* (non-Javadoc)
@@ -160,7 +186,34 @@ public class ConfigUtil implements IServiceConnectionHandler {
 		ServiceConnection connection = new ServiceConnection();
 		connection.setHost(getHost());
 		connection.setPort(getPort());
+		connection.setService(getService());
 		return connection;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.riena.interfaces.IServiceConnectionHandler#addConnectionChangeListener(org.opensixen.riena.interfaces.IConnectionChangeListener)
+	 */
+	@Override
+	public void addConnectionChangeListener(IConnectionChangeListener listener) {
+		connectionChangeListeners.add(listener);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.opensixen.riena.interfaces.IServiceConnectionHandler#removeConnectionChangeListener(org.opensixen.riena.interfaces.IConnectionChangeListener)
+	 */
+	@Override
+	public void removeConnectionChangeListener(IConnectionChangeListener listener) {
+		if (connectionChangeListeners.contains(listener))	{
+			connectionChangeListeners.remove(listener);
+		}		
+	}	
+	
+	private void fireConnectionChange()	{
+		for (IConnectionChangeListener listener : connectionChangeListeners)	{
+			listener.fireConnectionChange();
+		}
 	}
 	
 }
